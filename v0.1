@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Civic Complaint Portal Prototype</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
 
@@ -101,10 +102,10 @@
             position: relative;
             overflow: hidden; /* Ensure image fits */
         }
-        .map-section img {
+        #home-map {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Cover the area, cropping if necessary */
+            min-height: 400px; /* Ensure map has a minimum height */
         }
         .map-overlay-bottom-right {
             position: absolute;
@@ -179,7 +180,7 @@
         .status-in-progress { color: orange; font-weight: bold; }
         .status-resolved { color: green; font-weight: bold; }
         .status-closed { color: darkgreen; font-weight: bold; }
-        .map-placeholder {
+        .map-container { /* Renamed from map-placeholder to be more semantically correct */
             background-color: #e0e0e0;
             height: 300px;
             width: 100%;
@@ -226,8 +227,7 @@
         </div>
         <div class="home-right">
             <div class="map-section">
-                <img src="https://via.placeholder.com/600x400/D0E6FA/333333?text=Map+of+Thane+Placeholder" alt="Map of Thane">
-                <div class="map-overlay-bottom-right">Report a problem | OpenStreetMap contributors</div>
+                <div id="home-map"></div> <div class="map-overlay-bottom-right">Report a problem | OpenStreetMap contributors</div>
                 <button class="map-overlay-button">CLICK TO VIEW</button>
             </div>
         </div>
@@ -302,13 +302,13 @@
         </div>
         <div class="form-group">
             <label for="location-address">Location (Address / Landmark):</label>
-            <input type="text" id="location-address" placeholder="e.g., Near City Hospital, Road No. 5">
+            <input type="text" id="location-address" placeholder="e.g., Near City Hospital, Road No. 5"><br>
         </div>
         <div class="form-group">
             <label>Exact Location on Map:</label>
-            <div class="map-placeholder">Interactive Map Placeholder (User can drop a pin here for Lat/Lon)</div>
-            <p style="font-size: 0.9em; color: #666;">*Pin drop will auto-fill Latitude: [Lat], Longitude: [Lon]</p>
-            <button class="btn" style="margin-top: 5px;">Use My Current Location (Optional)</button>
+            <div id="submit-map" class="map-container" style="height: 300px;"></div>
+            <p style="font-size: 0.9em; color: #666;">*Pin drop will auto-fill Latitude: <span id="lat-display">[Lat]</span>, Longitude: <span id="lon-display">[Lon]</span></p>
+            <button class="btn" style="margin-top: 5px;" onclick="useCurrentLocation()">Use My Current Location (Optional)</button>
         </div>
         <div class="form-group">
             <label>Upload Photos (Optional):</label>
@@ -385,7 +385,7 @@
         <h2>My Assigned Complaints</h2>
         <div class="flex-container">
             <div class="flex-item">
-                <div class="map-placeholder" style="height: 400px;">Interactive Map Placeholder (Markers for Assigned Complaints)</div>
+                <div id="assigned-map" class="map-container" style="height: 400px;"></div>
             </div>
             <div class="flex-item">
                 <div class="form-group">
@@ -435,7 +435,7 @@
             <p><strong>Location:</strong> Main St, Bhiwandi (Lat: 19.1234, Lon: 73.8901)</p>
             <p><strong>Description:</strong> Large pothole near main square.</p>
             <p><strong>Current Status:</strong> <span class="status-in-progress">In Progress</span></p>
-            <div class="map-placeholder" style="height: 150px; font-size: 0.9em;">Small Map View of Complaint Location</div>
+            <div id="update-map" class="map-container" style="height: 150px; font-size: 0.9em;"></div>
             <p><strong>Photos (User/Admin Uploaded):</strong></p>
             <div class="photos-grid">
                 <div class="photo-thumbnail">User Photo 1</div>
@@ -476,7 +476,7 @@
         </div>
         <div class="flex-container">
             <div class="flex-item">
-                <div class="map-placeholder" style="height: 400px;">Interactive Map Placeholder (All Complaints, Color-Coded)</div>
+                <div id="admin-map" class="map-container" style="height: 400px;"></div>
             </div>
             <div class="flex-item">
                 <h3>All Complaints:</h3>
@@ -571,5 +571,110 @@
         <p style="color: green; margin-top: 15px;"></p>
     </div>
 
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Approximate coordinates for Thane, Maharashtra, India
+        const THANE_COORDS = [19.2183, 72.9781];
+        const DEFAULT_ZOOM = 13;
+
+        // --- Home Page Map ---
+        const homeMap = L.map('home-map').setView(THANE_COORDS, DEFAULT_ZOOM);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(homeMap);
+
+        // --- Submit New Complaint Map ---
+        const submitMap = L.map('submit-map').setView(THANE_COORDS, DEFAULT_ZOOM);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(submitMap);
+
+        let complaintMarker;
+        submitMap.on('click', function(e) {
+            if (complaintMarker) {
+                submitMap.removeLayer(complaintMarker);
+            }
+            complaintMarker = L.marker(e.latlng).addTo(submitMap);
+            document.getElementById('lat-display').textContent = e.latlng.lat.toFixed(4);
+            document.getElementById('lon-display').textContent = e.latlng.lng.toFixed(4);
+        });
+
+        function useCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const currentLatLng = [lat, lon];
+
+                    if (complaintMarker) {
+                        submitMap.removeLayer(complaintMarker);
+                    }
+                    complaintMarker = L.marker(currentLatLng).addTo(submitMap);
+                    submitMap.setView(currentLatLng, DEFAULT_ZOOM);
+                    document.getElementById('lat-display').textContent = lat.toFixed(4);
+                    document.getElementById('lon-display').textContent = lon.toFixed(4);
+                }, function(error) {
+                    alert('Error getting your location: ' + error.message);
+                });
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+
+
+        // --- Assigned Complaints Map (Vendor) ---
+        const assignedMap = L.map('assigned-map').setView(THANE_COORDS, DEFAULT_ZOOM);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(assignedMap);
+
+        // Example markers for assigned complaints
+        const assignedComplaints = [
+            { id: 'V001', lat: 19.2200, lon: 72.9800, type: 'Pothole', status: 'In Progress' },
+            { id: 'V002', lat: 19.2150, lon: 72.9750, type: 'Street Light Out', status: 'Pending' }
+        ];
+
+        assignedComplaints.forEach(complaint => {
+            L.marker([complaint.lat, complaint.lon])
+                .addTo(assignedMap)
+                .bindPopup(`<b>${complaint.type}</b><br>ID: ${complaint.id}<br>Status: ${complaint.status}`);
+        });
+
+        // --- Update Complaint Map (Vendor) ---
+        const updateMap = L.map('update-map').setView([19.1234, 73.8901], 15); // Specific location for V001
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(updateMap);
+        L.marker([19.1234, 73.8901]).addTo(updateMap)
+            .bindPopup("Complaint V001 Location").openPopup();
+
+        // --- Admin Dashboard Map ---
+        const adminMap = L.map('admin-map').setView(THANE_COORDS, DEFAULT_ZOOM);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(adminMap);
+
+        // Example markers for all complaints (color-coded)
+        const allComplaints = [
+            { id: 'C001', lat: 19.2200, lon: 72.9800, type: 'Pothole', status: 'In Progress', color: 'orange' },
+            { id: 'C002', lat: 19.2150, lon: 72.9750, type: 'Street Light Out', status: 'Resolved', color: 'green' },
+            { id: 'C003', lat: 19.2100, lon: 72.9700, type: 'Garbage Collection', status: 'Pending', color: 'red' },
+            // Add more dummy complaints as needed
+            { id: 'C004', lat: 19.2250, lon: 72.9850, type: 'Water Leak', status: 'Closed', color: 'darkgreen' }
+        ];
+
+        allComplaints.forEach(complaint => {
+            const customIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style="background-color:${complaint.color}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>`,
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+
+            L.marker([complaint.lat, complaint.lon], { icon: customIcon })
+                .addTo(adminMap)
+                .bindPopup(`<b>${complaint.type}</b><br>ID: ${complaint.id}<br>Status: ${complaint.status}`);
+        });
+    </script>
 </body>
 </html>
