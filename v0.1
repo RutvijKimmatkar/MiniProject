@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civic Complaint Portal Prototype</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+
+        /* Styles for the NEW Home Page Header */
+        .header {
+            background-color: #4bc8eb; /* Light blue similar to image */
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #cce0ff;
+        }
+        .header .nav-links a {
+            color: #0056b3;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+        .header .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .header .logo {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        /* Styles for the NEW Home Page Content */
+        .home-page {
+            display: flex;
+            min-height: calc(100vh - 50px); /* Adjust for header height */
+            background-color: #71cdf7; /* Lighter blue for background */
+            padding: 20px;
+            box-sizing: border-box; /* Include padding in height calculation */
+            align-items: stretch; /* Stretch items to fill height */
+        }
+        .home-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .home-right {
+            flex: 1.5; /* Map takes more space */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .portal-title {
+            font-family: 'Georgia', serif; /* Simulating the script font */
+            font-size: 3em;
+            color: #4a4a4a;
+            margin-bottom: 40px;
+        }
+        .home-button {
+            background-color: #ffffff;
+            color: #0056b3;
+            border: 2px solid #007bff;
+            padding: 15px 30px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 8px;
+            width: 80%; /* Adjust width */
+            max-width: 300px; /* Max width for buttons */
+            text-align: center;
+            text-decoration: none;
+            display: block; /* Make it block to take full width */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .home-button:hover {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .home-link {
+            font-size: 1em;
+            color: #0056b3;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .home-link:hover {
+            text-decoration: underline;
+        }
+        .map-section {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            width: 100%;
+            height: 100%; /* Fill available height within home-right */
+            position: relative;
+            overflow: hidden; /* Ensure image fits */
+        }
+        .map-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the area, cropping if necessary */
+        }
+        .map-overlay-bottom-right {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            font-size: 0.8em;
+            border-radius: 5px;
+            color: #555;
+            z-index: 10; /* Ensure it's above the map image */
+        }
+        .map-overlay-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10; /* Ensure it's above the map image */
+        }
+        .map-overlay-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* --- Existing general page CSS styles --- */
+        .page {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            max-width: 900px; /* Adjust for wider pages like dashboards */
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid #ddd;
+            margin-top: 30px; /* Add margin to separate from home page */
+        }
+        h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group textarea,
+        .form-group select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .btn:hover { background-color: #0056b3; }
+        .table-container { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        table th, table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        table th { background-color: #f2f2f2; }
+        .status-pending { color: red; font-weight: bold; }
+        .status-in-progress { color: orange; font-weight: bold; }
+        .status-resolved { color: green; font-weight: bold; }
+        .status-closed { color: darkgreen; font-weight: bold; }
+        .map-placeholder {
+            background-color: #e0e0e0;
+            height: 300px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px dashed #999;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
+        .photo-thumbnail { width: 100px; height: 100px; background-color: #eee; border: 1px solid #ccc; display: flex; justify-content: center; align-items: center; font-size: 0.8em; color: #555; overflow: hidden; }
+        .photo-thumbnail img { max-width: 100%; max-height: 100%; object-fit: cover; }
+        .flex-container { display: flex; gap: 20px; }
+        .flex-item { flex: 1; }
+        .summary-stats { display: flex; justify-content: space-around; margin-bottom: 20px; }
+        .stat-box { background-color: #e6f2ff; border: 1px solid #cce0ff; border-radius: 5px; padding: 15px; text-align: center; flex: 1; margin: 0 5px; }
+        .stat-box h3 { margin-top: 0; color: #0056b3; }
+        .stat-box p { font-size: 1.5em; font-weight: bold; color: #333; }
+
+        /* Small adjustments for narrower forms */
+        .form-page { max-width: 500px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="nav-links">
+            <a href="#home">HOME</a>
+            <a href="#my-submitted-complaints">Complaints</a>
+            <a href="#help">Help</a>
+            <a href="#about-us">About us</a>
+            <a href="#login-selection">login</a> </div>
+        <div class="logo">DBIT 2025</div>
+    </div>
+
+    <div class="home-page" id="home">
+        <div class="home-left">
+            <h1 class="portal-title">Civic Complaint<br>Portal</h1>
+            <a href="#user-registration-page" class="home-button">Register Complaint</a>
+            <a href="#my-submitted-complaints" class="home-button">Recent Complaint</a>
+            <a href="#vendor-login" class="home-link">Vendor / Admin Login</a>
+        </div>
+        <div class="home-right">
+            <div class="map-section">
+                <img src="https://via.placeholder.com/600x400/D0E6FA/333333?text=Map+of+Thane+Placeholder" alt="Map of Thane">
+                <div class="map-overlay-bottom-right">Report a problem | OpenStreetMap contributors</div>
+                <button class="map-overlay-button">CLICK TO VIEW</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page form-page" id="login-selection">
+        <h2>Choose Login Type</h2>
+        <p style="text-align: center;">Please select your role to log in:</p>
+        <button class="btn" onclick="window.location.href='#user-login'">User Login</button>
+        <button class="btn" onclick="window.location.href='#vendor-login'">Vendor Login</button>
+        <button class="btn" onclick="window.location.href='#admin-dashboard'">Admin Login</button> </div>
+
+
+    <div class="page form-page" id="user-registration-page">
+        <h2>New User Registration</h2>
+        <div class="form-group">
+            <label for="reg-name">Full Name:</label>
+            <input type="text" id="reg-name" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+            <label for="reg-email">Email Address:</label>
+            <input type="email" id="reg-email" placeholder="Enter your email (username)">
+        </div>
+        <div class="form-group">
+            <label for="reg-phone">Phone Number:</label>
+            <input type="tel" id="reg-phone" placeholder="Enter your phone number">
+        </div>
+        <div class="form-group">
+            <label for="reg-password">Password:</label>
+            <input type="password" id="reg-password" placeholder="Enter your password">
+        </div>
+        <div class="form-group">
+            <label for="reg-confirm-password">Confirm Password:</label>
+            <input type="password" id="reg-confirm-password" placeholder="Confirm your password">
+        </div>
+        <button class="btn">Register</button>
+        <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="#user-login">Login here</a></p>
+        <p style="color: red; text-align: center; margin-top: 10px;"></p>
+    </div>
+
+    <div class="page form-page" id="user-login">
+        <h2>User Login</h2>
+        <div class="form-group">
+            <label for="user-login-email">Email Address (Username):</label>
+            <input type="email" id="user-login-email" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+            <label for="user-login-password">Password:</label>
+            <input type="password" id="user-login-password" placeholder="Enter your password">
+        </div>
+        <button class="btn">Login</button>
+        <p style="text-align: center; margin-top: 15px;">Don't have an account? <a href="#user-registration-page">Register here</a></p>
+        <p style="color: red; text-align: center; margin-top: 10px;"></p>
+    </div>
+
+    <div class="page" id="submit-new-complaint">
+        <h2>Submit New Complaint</h2>
+        <div class="form-group">
+            <label for="issue-type">Type of Issue:</label>
+            <select id="issue-type">
+                <option value="">-- Select --</option>
+                <option value="Pothole">Pothole</option>
+                <option value="Street Light Out">Street Light Out</option>
+                <option value="Garbage Collection">Garbage Collection</option>
+                <option value="Water Leak">Water Leak</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="description">Description of Issue:</label>
+            <textarea id="description" rows="5" placeholder="Provide details about the issue..."></textarea>
+        </div>
+        <div class="form-group">
+            <label for="location-address">Location (Address / Landmark):</label>
+            <input type="text" id="location-address" placeholder="e.g., Near City Hospital, Road No. 5">
+        </div>
+        <div class="form-group">
+            <label>Exact Location on Map:</label>
+            <div class="map-placeholder">Interactive Map Placeholder (User can drop a pin here for Lat/Lon)</div>
+            <p style="font-size: 0.9em; color: #666;">*Pin drop will auto-fill Latitude: [Lat], Longitude: [Lon]</p>
+            <button class="btn" style="margin-top: 5px;">Use My Current Location (Optional)</button>
+        </div>
+        <div class="form-group">
+            <label>Upload Photos (Optional):</label>
+            <button class="btn">Choose Files</button>
+            <div class="photos-grid">
+                <div class="photo-thumbnail">Image 1</div>
+                <div class="photo-thumbnail">Image 2</div>
+                </div>
+        </div>
+        <button class="btn">Submit Complaint</button>
+        <p style="color: green; margin-top: 15px;"></p>
+    </div>
+
+    <div class="page" id="my-submitted-complaints">
+        <h2>My Submitted Complaints</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Complaint ID</th>
+                        <th>Type of Issue</th>
+                        <th>Location</th>
+                        <th>Current Status</th>
+                        <th>Date Submitted</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>C001</td>
+                        <td>Pothole</td>
+                        <td>Main St, Bhiwandi</td>
+                        <td class="status-in-progress">In Progress</td>
+                        <td>2025-07-20</td>
+                        <td><a href="#">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td>C002</td>
+                        <td>Street Light Out</td>
+                        <td>Elm St, Bhiwandi</td>
+                        <td class="status-resolved">Resolved</td>
+                        <td>2025-07-18</td>
+                        <td><a href="#">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td>C003</td>
+                        <td>Garbage Collection</td>
+                        <td>Park Ave, Bhiwandi</td>
+                        <td class="status-pending">Pending</td>
+                        <td>2025-07-22</td>
+                        <td><a href="#">View Details</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p style="margin-top: 15px; font-style: italic;">*Click "View Details" to see vendor updates and admin notes.</p>
+    </div>
+
+    <div class="page form-page" id="vendor-login">
+        <h2>Vendor Login</h2>
+        <div class="form-group">
+            <label for="vendor-username">Username:</label>
+            <input type="text" id="vendor-username" placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+            <label for="vendor-password">Password:</label>
+            <input type="password" id="vendor-password" placeholder="Enter your password">
+        </div>
+        <button class="btn">Login</button>
+        <p style="color: red; text-align: center; margin-top: 10px;"></p>
+    </div>
+
+    <div class="page" id="assigned-complaints">
+        <h2>My Assigned Complaints</h2>
+        <div class="flex-container">
+            <div class="flex-item">
+                <div class="map-placeholder" style="height: 400px;">Interactive Map Placeholder (Markers for Assigned Complaints)</div>
+            </div>
+            <div class="flex-item">
+                <div class="form-group">
+                    <label for="vendor-filter-status">Filter by Status:</label>
+                    <select id="vendor-filter-status">
+                        <option value="All">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>V001</td>
+                                <td>Pothole</td>
+                                <td>Main St, Bhiwandi</td>
+                                <td class="status-in-progress">In Progress</td>
+                            </tr>
+                            <tr>
+                                <td>V002</td>
+                                <td>Street Light Out</td>
+                                <td>Elm St, Bhiwandi</td>
+                                <td class="status-pending">Pending</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 15px; font-style: italic;">*Double-click a row to update status.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="update-complaint">
+        <h2>Update Complaint: <span style="color: #007bff;">V001</span></h2>
+        <div style="margin-bottom: 20px;">
+            <p><strong>Issue Type:</strong> Pothole</p>
+            <p><strong>Location:</strong> Main St, Bhiwandi (Lat: 19.1234, Lon: 73.8901)</p>
+            <p><strong>Description:</strong> Large pothole near main square.</p>
+            <p><strong>Current Status:</strong> <span class="status-in-progress">In Progress</span></p>
+            <div class="map-placeholder" style="height: 150px; font-size: 0.9em;">Small Map View of Complaint Location</div>
+            <p><strong>Photos (User/Admin Uploaded):</strong></p>
+            <div class="photos-grid">
+                <div class="photo-thumbnail">User Photo 1</div>
+                </div>
+        </div>
+
+        <h3>Status Update:</h3>
+        <div class="form-group">
+            <input type="radio" id="in-progress-radio" name="status" value="In Progress">
+            <label for="in-progress-radio">In Progress</label>
+            <input type="radio" id="resolved-radio" name="status" value="Resolved">
+            <label for="resolved-radio">Resolved</label>
+        </div>
+        <div class="form-group">
+            <label for="vendor-comments">Comments/Notes:</label>
+            <textarea id="vendor-comments" rows="3" placeholder="Add comments about the situation..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Upload Photo Proof (Before/After):</label>
+            <button class="btn">Upload Photo</button>
+            <div class="photos-grid">
+                <div class="photo-thumbnail">Vendor Photo 1</div>
+                </div>
+        </div>
+        <button class="btn">Save Updates</button>
+        <button class="btn">Back to List</button>
+        <p style="color: green; margin-top: 15px;"></p>
+    </div>
+
+    <div class="page" id="admin-dashboard">
+        <h2>Admin Dashboard</h2>
+        <div class="summary-stats">
+            <div class="stat-box"><h3>Total</h3><p>150</p></div>
+            <div class="stat-box"><h3>Pending</h3><p style="color:red;">25</p></div>
+            <div class="stat-box"><h3>In Progress</h3><p style="color:orange;">50</p></div>
+            <div class="stat-box"><h3>Resolved</h3><p style="color:green;">40</p></div>
+            <div class="stat-box"><h3>Closed</h3><p style="color:darkgreen;">35</p></div>
+        </div>
+        <div class="flex-container">
+            <div class="flex-item">
+                <div class="map-placeholder" style="height: 400px;">Interactive Map Placeholder (All Complaints, Color-Coded)</div>
+            </div>
+            <div class="flex-item">
+                <h3>All Complaints:</h3>
+                <div class="form-group">
+                    <label for="admin-filter-status">Filter by Status:</label>
+                    <select id="admin-filter-status">
+                        <option value="All">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Vendor</th>
+                                <th>Last Updated</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>C001</td>
+                                <td>Pothole</td>
+                                <td>Main St</td>
+                                <td class="status-in-progress">In Progress</td>
+                                <td>City Repair Co.</td>
+                                <td>2025-07-25</td>
+                                <td><a href="#">Verify</a></td>
+                            </tr>
+                            <tr>
+                                <td>C002</td>
+                                <td>Light Out</td>
+                                <td>Elm St</td>
+                                <td class="status-resolved">Resolved</td>
+                                <td>City Repair Co.</td>
+                                <td>2025-07-24</td>
+                                <td><a href="#">Verify</a></td>
+                            </tr>
+                            <tr>
+                                <td>C003</td>
+                                <td>Garbage</td>
+                                <td>Park Ave</td>
+                                <td class="status-pending">Pending</td>
+                                <td>-</td>
+                                <td>2025-07-22</td>
+                                <td><a href="#">Assign</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="verify-close-complaint">
+        <h2>Verify & Close Complaint: <span style="color: #007bff;">C002</span></h2>
+        <div style="margin-bottom: 20px;">
+            <h3>Complaint Details:</h3>
+            <p><strong>Issue Type:</strong> Street Light Out</p>
+            <p><strong>Location:</strong> Elm St, Bhiwandi</p>
+            <p><strong>Description:</strong> Light pole 5 on Elm Street is not working.</p>
+            <p><strong>Current Status:</strong> <span class="status-resolved">Resolved</span></p>
+            <p><strong>Assigned Vendor:</strong> City Repair Co.</p>
+            <p><strong>Time Taken (Vendor):</strong> 2 days (from In Progress to Resolved)</p>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <h3>Vendor's Updates:</h3>
+            <p><strong>Comments:</strong> "Replaced faulty bulb and Chelsea wire."</p>
+            <p><strong>Photo Proof:</strong></p>
+            <div class="photos-grid">
+                <div class="photo-thumbnail">Vendor Photo (Before)</div>
+                <div class="photo-thumbnail">Vendor Photo (After)</div>
+            </div>
+        </div>
+
+        <h3>Admin Verification:</h3>
+        <div class="form-group">
+            <label for="admin-comments">Admin Comments:</label>
+            <textarea id="admin-comments" rows="3" placeholder="Add your verification notes..."></textarea>
+        </div>
+        <button class="btn">Verify and Close Complaint</button>
+        <button class="btn" style="background-color: #dc3545;">Reopen Complaint (if unsatisfactory)</button>
+        <button class="btn">Back to Dashboard</button>
+        <p style="color: green; margin-top: 15px;"></p>
+    </div>
+
+</body>
+</html>
