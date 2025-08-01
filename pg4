@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit New Complaint</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header {
+            background-color: #4bc8eb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cce0ff;
+        }
+        .header .nav-links a {
+            color: #0056b3; text-decoration: none; margin-right: 20px; font-weight: bold;
+        }
+        .header .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .header .logo {
+            font-size: 1.2em; font-weight: bold; color: #0056b3;
+        }
+        .page {
+            background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid #ddd; margin-top: 30px;
+        }
+        h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px;
+        }
+        .btn {
+            background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;
+        }
+        .btn:hover { background-color: #0056b3; }
+        .map-container {
+            height: 300px; width: 100%; border: 1px dashed #999; margin-bottom: 20px;
+        }
+        .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
+        .photo-thumbnail { width: 100px; height: 100px; background-color: #eee; border: 1px solid #ccc; display: flex; justify-content: center; align-items: center; font-size: 0.8em; color: #555; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="my-submitted-complaints.html">Complaints</a>
+            <a href="#">Help</a>
+            <a href="#">About us</a>
+            <a href="login-selection.html">login</a>
+        </div>
+        <div class="logo">DBIT 2025</div>
+    </div>
+    <div class="page" id="submit-new-complaint">
+        <h2>Submit New Complaint</h2>
+        <div class="form-group">
+            <label for="issue-type">Type of Issue:</label>
+            <select id="issue-type">
+                <option value="">-- Select --</option>
+                <option value="Pothole">Pothole</option>
+                <option value="Street Light Out">Street Light Out</option>
+                <option value="Garbage Collection">Garbage Collection</option>
+                <option value="Water Leak">Water Leak</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="description">Description of Issue:</label>
+            <textarea id="description" rows="5" placeholder="Provide details about the issue..."></textarea>
+        </div>
+        <div class="form-group">
+            <label for="location-address">Location (Address / Landmark):</label>
+            <input type="text" id="location-address" placeholder="e.g., Near City Hospital, Road No. 5"><br>
+        </div>
+        <div class="form-group">
+            <label>Exact Location on Map:</label>
+            <div id="submit-map" class="map-container"></div>
+            <p style="font-size: 0.9em; color: #666;">*Pin drop will auto-fill Latitude: <span id="lat-display">[Lat]</span>, Longitude: <span id="lon-display">[Lon]</span></p>
+            <button class="btn" style="margin-top: 5px;" onclick="useCurrentLocation()">Use My Current Location (Optional)</button>
+        </div>
+        <div class="form-group">
+            <label>Upload Photos (Optional):</label>
+            <button class="btn">Choose Files</button>
+            <div class="photos-grid">
+                <div class="photo-thumbnail">Image 1</div>
+                <div class="photo-thumbnail">Image 2</div>
+            </div>
+        </div>
+        <button class="btn">Submit Complaint</button>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const THANE_COORDS = [19.2183, 72.9781];
+        const DEFAULT_ZOOM = 13;
+        const submitMap = L.map('submit-map').setView(THANE_COORDS, DEFAULT_ZOOM);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(submitMap);
+        let complaintMarker;
+        submitMap.on('click', function(e) {
+            if (complaintMarker) {
+                submitMap.removeLayer(complaintMarker);
+            }
+            complaintMarker = L.marker(e.latlng).addTo(submitMap);
+            document.getElementById('lat-display').textContent = e.latlng.lat.toFixed(4);
+            document.getElementById('lon-display').textContent = e.latlng.lng.toFixed(4);
+        });
+        function useCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const currentLatLng = [lat, lon];
+                    if (complaintMarker) {
+                        submitMap.removeLayer(complaintMarker);
+                    }
+                    complaintMarker = L.marker(currentLatLng).addTo(submitMap);
+                    submitMap.setView(currentLatLng, DEFAULT_ZOOM);
+                    document.getElementById('lat-display').textContent = lat.toFixed(4);
+                    document.getElementById('lon-display').textContent = lon.toFixed(4);
+                }, function(error) {
+                    alert('Error getting your location: ' + error.message);
+                });
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+    </script>
+</body>
+</html>
