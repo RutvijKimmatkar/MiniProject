@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify & Close Complaint</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header {
+            background-color: #4bc8eb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cce0ff;
+        }
+        .header .nav-links a {
+            color: #0056b3; text-decoration: none; margin-right: 20px; font-weight: bold;
+        }
+        .header .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .header .logo {
+            font-size: 1.2em; font-weight: bold; color: #0056b3;
+        }
+        .page {
+            background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid #ddd; margin-top: 30px;
+        }
+        h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group textarea {
+            width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px;
+        }
+        .btn {
+            background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;
+        }
+        .btn:hover { background-color: #0056b3; }
+        .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
+        .photo-thumbnail { width: 100px; height: 100px; background-color: #eee; border: 1px solid #ccc; display: flex; justify-content: center; align-items: center; font-size: 0.8em; color: #555; overflow: hidden; }
+        .status-resolved { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="my-submitted-complaints.html">Complaints</a>
+            <a href="#">Help</a>
+            <a href="#">About us</a>
+            <a href="login-selection.html">login</a>
+        </div>
+        <div class="logo">DBIT 2025</div>
+    </div>
+    <div class="page" id="verify-close-complaint">
+        <h2>Verify & Close Complaint: <span style="color: #007bff;">C002</span></h2>
+        <div style="margin-bottom: 20px;">
+            <h3>Complaint Details:</h3>
+            <p><strong>Issue Type:</strong> Street Light Out</p>
+            <p><strong>Location:</strong> Elm St, Bhiwandi</p>
+            <p><strong>Description:</strong> Light pole 5 on Elm Street is not working.</p>
+            <p><strong>Current Status:</strong> <span class="status-resolved">Resolved</span></p>
+            <p><strong>Assigned Vendor:</strong> City Repair Co.</p>
+            <p><strong>Time Taken (Vendor):</strong> 2 days (from In Progress to Resolved)</p>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <h3>Vendor's Updates:</h3>
+            <p><strong>Comments:</strong> "Replaced faulty bulb and Chelsea wire."</p>
+            <p><strong>Photo Proof:</strong></p>
+            <div class="photos-grid">
+                <div class="photo-thumbnail">Vendor Photo (Before)</div>
+                <div class="photo-thumbnail">Vendor Photo (After)</div>
+            </div>
+        </div>
+        <h3>Admin Verification:</h3>
+        <div class="form-group">
+            <label for="admin-comments">Admin Comments:</label>
+            <textarea id="admin-comments" rows="3" placeholder="Add your verification notes..."></textarea>
+        </div>
+        <button class="btn">Verify and Close Complaint</button>
+        <button class="btn" style="background-color: #dc3545;">Reopen Complaint (if unsatisfactory)</button>
+        <button class="btn" onclick="window.location.href='admin-dashboard.html'">Back to Dashboard</button>
+    </div>
+</body>
+</html>
