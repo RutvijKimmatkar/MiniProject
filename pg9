@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header {
+            background-color: #4bc8eb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cce0ff;
+        }
+        .header .nav-links a {
+            color: #0056b3; text-decoration: none; margin-right: 20px; font-weight: bold;
+        }
+        .header .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .header .logo {
+            font-size: 1.2em; font-weight: bold; color: #0056b3;
+        }
+        .page {
+            background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid #ddd; margin-top: 30px;
+        }
+        h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
+        .btn {
+            background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;
+        }
+        .btn:hover { background-color: #0056b3; }
+        .table-container { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        table th, table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        table th { background-color: #f2f2f2; }
+        .status-pending { color: red; font-weight: bold; }
+        .status-in-progress { color: orange; font-weight: bold; }
+        .status-resolved { color: green; font-weight: bold; }
+        .status-closed { color: darkgreen; font-weight: bold; }
+        .flex-container { display: flex; gap: 20px; }
+        .flex-item { flex: 1; }
+        .summary-stats { display: flex; justify-content: space-around; margin-bottom: 20px; }
+        .stat-box { background-color: #e6f2ff; border: 1px solid #cce0ff; border-radius: 5px; padding: 15px; text-align: center; flex: 1; margin: 0 5px; }
+        .stat-box h3 { margin-top: 0; color: #0056b3; }
+        .stat-box p { font-size: 1.5em; font-weight: bold; color: #333; }
+        .map-container {
+            height: 400px; width: 100%; border: 1px dashed #999; margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="my-submitted-complaints.html">Complaints</a>
+            <a href="#">Help</a>
+            <a href="#">About us</a>
+            <a href="login-selection.html">login</a>
+        </div>
+        <div class="logo">DBIT 2025</div>
+    </div>
+    <div class="page" id="admin-dashboard">
+        <h2>Admin Dashboard</h2>
+        <div class="summary-stats">
+            <div class="stat-box"><h3>Total</h3><p>150</p></div>
+            <div class="stat-box"><h3>Pending</h3><p style="color:red;">25</p></div>
+            <div class="stat-box"><h3>In Progress</h3><p style="color:orange;">50</p></div>
+            <div class="stat-box"><h3>Resolved</h3><p style="color:green;">40</p></div>
+            <div class="stat-box"><h3>Closed</h3><p style="color:darkgreen;">35</p></div>
+        </div>
+        <div class="flex-container">
+            <div class="flex-item">
+                <div id="admin-map" class="map-container"></div>
+            </div>
+            <div class="flex-item">
+                <h3>All Complaints:</h3>
+                <div class="form-group">
+                    <label for="admin-filter-status">Filter by Status:</label>
+                    <select id="admin-filter-status">
+                        <option value="All">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Vendor</th>
+                                <th>Last Updated</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>C001</td>
+                                <td>Pothole</td>
+                                <td>Main St</td>
+                                <td class="status-in-progress">In Progress</td>
+                                <td>City Repair Co.</td>
+                                <td>2025-07-25</td>
+                                <td><a href="#">Verify</a></td>
+                            </tr>
+                            <tr>
+                                <td>C002</td>
+                                <td>Light Out</td>
+                                <td>Elm St</td>
+                                <td class="status-resolved">Resolved</td>
+                                <td>City Repair Co.</td>
+                                <td>2025-07-24</td>
+                                <td><a href="verify-close-complaint.html">Verify</a></td>
+                            </tr>
+                            <tr>
+                                <td>C003</td>
+                                <td>Garbage</td>
+                                <td>Park Ave</td>
+                                <td class="status-pending">Pending</td>
+                                <td>-</td>
+                                <td>2025-07-22</td>
+                                <td><a href="#">Assign</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const THANE_COORDS = [19.2183, 72.9781];
+        const DEFAULT_ZOOM = 13;
+        const adminMap = L.map('admin-map').setView(THANE_COORDS, DEFAULT_ZOOM);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(adminMap);
+        const allComplaints = [
+            { id: 'C001', lat: 19.2200, lon: 72.9800, type: 'Pothole', status: 'In Progress', color: 'orange' },
+            { id: 'C002', lat: 19.2150, lon: 72.9750, type: 'Street Light Out', status: 'Resolved', color: 'green' },
+            { id: 'C003', lat: 19.2100, lon: 72.9700, type: 'Garbage Collection', status: 'Pending', color: 'red' },
+            { id: 'C004', lat: 19.2250, lon: 72.9850, type: 'Water Leak', status: 'Closed', color: 'darkgreen' }
+        ];
+        allComplaints.forEach(complaint => {
+            const customIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style="background-color:${complaint.color}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>`,
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+            L.marker([complaint.lat, complaint.lon], { icon: customIcon })
+                .addTo(adminMap)
+                .bindPopup(`<b>${complaint.type}</b><br>ID: ${complaint.id}<br>Status: ${complaint.status}`);
+        });
+    </script>
+</body>
+</html>
