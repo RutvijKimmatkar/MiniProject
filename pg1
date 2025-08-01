@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civic Complaint Portal</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header {
+            background-color: #4bc8eb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cce0ff;
+        }
+        .header .nav-links a {
+            color: #0056b3; text-decoration: none; margin-right: 20px; font-weight: bold;
+        }
+        .header .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .header .logo {
+            font-size: 1.2em; font-weight: bold; color: #0056b3;
+        }
+        .home-page {
+            display: flex; min-height: calc(100vh - 50px); background-color: #71cdf7; padding: 20px; box-sizing: border-box; align-items: stretch;
+        }
+        .home-left {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center;
+        }
+        .home-right {
+            flex: 1.5; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .portal-title {
+            font-family: 'Georgia', serif; font-size: 3em; color: #4a4a4a; margin-bottom: 40px;
+        }
+        .home-button {
+            background-color: #ffffff; color: #0056b3; border: 2px solid #007bff; padding: 15px 30px; margin-bottom: 20px; font-size: 1.2em; cursor: pointer; border-radius: 8px; width: 80%; max-width: 300px; text-align: center; text-decoration: none; display: block; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .home-button:hover {
+            background-color: #007bff; color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .home-link {
+            font-size: 1em; color: #0056b3; text-decoration: none; margin-top: 10px;
+        }
+        .home-link:hover {
+            text-decoration: underline;
+        }
+        .map-section {
+            background-color: #fff; border: 1px solid #ccc; width: 100%; height: 100%; position: relative; overflow: hidden;
+        }
+        #home-map {
+            width: 100%; height: 100%; min-height: 400px;
+        }
+        .map-overlay-bottom-right {
+            position: absolute; bottom: 10px; right: 10px; background-color: rgba(255, 255, 255, 0.8); padding: 5px 10px; font-size: 0.8em; border-radius: 5px; color: #555; z-index: 10;
+        }
+        .map-overlay-button {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; z-index: 10;
+        }
+        .map-overlay-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="my-submitted-complaints.html">Complaints</a>
+            <a href="#">Help</a>
+            <a href="#">About us</a>
+            <a href="login-selection.html">login</a>
+        </div>
+        <div class="logo">DBIT 2025</div>
+    </div>
+    <div class="home-page" id="home">
+        <div class="home-left">
+            <h1 class="portal-title">Civic Complaint<br>Portal</h1>
+            <a href="file:///C:/Users/hp/Documents/mini%20project/pg4.html" class="home-button">Login</a>
+            <a href="my-submitted-complaints.html" class="home-button">Dashboard</a>
+        </div>
+        <div class="home-right">
+            <div class="map-section">
+                <div id="home-map"></div>
+                <div class="map-overlay-bottom-right">Report a problem | OpenStreetMap contributors</div>
+                <button class="map-overlay-button">CLICK TO VIEW</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const THANE_COORDS = [19.2183, 72.9781];
+        const DEFAULT_ZOOM = 13;
+        const homeMap = L.map('home-map').setView(THANE_COORDS, DEFAULT_ZOOM);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(homeMap);
+    </script>
+</body>
+</html>
