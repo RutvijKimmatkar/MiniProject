@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assigned Complaints</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header {
+            background-color: #4bc8eb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cce0ff;
+        }
+        .header .nav-links a {
+            color: #0056b3; text-decoration: none; margin-right: 20px; font-weight: bold;
+        }
+        .header .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .header .logo {
+            font-size: 1.2em; font-weight: bold; color: #0056b3;
+        }
+        .page {
+            background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid #ddd; margin-top: 30px;
+        }
+        h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
+        .btn {
+            background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;
+        }
+        .btn:hover { background-color: #0056b3; }
+        .table-container { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        table th, table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        table th { background-color: #f2f2f2; }
+        .status-pending { color: red; font-weight: bold; }
+        .status-in-progress { color: orange; font-weight: bold; }
+        .flex-container { display: flex; gap: 20px; }
+        .flex-item { flex: 1; }
+        .form-group { margin-bottom: 15px; }
+        .form-group select {
+            width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px;
+        }
+        .map-container {
+            height: 400px; width: 100%; border: 1px dashed #999; margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="my-submitted-complaints.html">Complaints</a>
+            <a href="#">Help</a>
+            <a href="#">About us</a>
+            <a href="login-selection.html">login</a>
+        </div>
+        <div class="logo">DBIT 2025</div>
+    </div>
+    <div class="page" id="assigned-complaints">
+        <h2>My Assigned Complaints</h2>
+        <div class="flex-container">
+            <div class="flex-item">
+                <div id="assigned-map" class="map-container"></div>
+            </div>
+            <div class="flex-item">
+                <div class="form-group">
+                    <label for="vendor-filter-status">Filter by Status:</label>
+                    <select id="vendor-filter-status">
+                        <option value="All">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr onclick="window.location.href='update-complaint.html'">
+                                <td>V001</td>
+                                <td>Pothole</td>
+                                <td>Main St, Bhiwandi</td>
+                                <td class="status-in-progress">In Progress</td>
+                            </tr>
+                            <tr>
+                                <td>V002</td>
+                                <td>Street Light Out</td>
+                                <td>Elm St, Bhiwandi</td>
+                                <td class="status-pending">Pending</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 15px; font-style: italic;">*Double-click a row to update status.</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const THANE_COORDS = [19.2183, 72.9781];
+        const DEFAULT_ZOOM = 13;
+        const assignedMap = L.map('assigned-map').setView(THANE_COORDS, DEFAULT_ZOOM);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(assignedMap);
+        const assignedComplaints = [
+            { id: 'V001', lat: 19.2200, lon: 72.9800, type: 'Pothole', status: 'In Progress' },
+            { id: 'V002', lat: 19.2150, lon: 72.9750, type: 'Street Light Out', status: 'Pending' }
+        ];
+        assignedComplaints.forEach(complaint => {
+            L.marker([complaint.lat, complaint.lon])
+                .addTo(assignedMap)
+                .bindPopup(`<b>${complaint.type}</b><br>ID: ${complaint.id}<br>Status: ${complaint.status}`);
+        });
+    </script>
+</body>
+</html>
