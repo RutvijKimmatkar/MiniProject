@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Submitted Complaints</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header {
+            background-color: #4bc8eb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cce0ff;
+        }
+        .header .nav-links a {
+            color: #0056b3; text-decoration: none; margin-right: 20px; font-weight: bold;
+        }
+        .header .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .header .logo {
+            font-size: 1.2em; font-weight: bold; color: #0056b3;
+        }
+        .page {
+            background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid #ddd; margin-top: 30px;
+        }
+        h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
+        .table-container { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        table th, table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        table th { background-color: #f2f2f2; }
+        .status-pending { color: red; font-weight: bold; }
+        .status-in-progress { color: orange; font-weight: bold; }
+        .status-resolved { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="my-submitted-complaints.html">Complaints</a>
+            <a href="#">Help</a>
+            <a href="#">About us</a>
+            <a href="login-selection.html">login</a>
+        </div>
+        <div class="logo">DBIT 2025</div>
+    </div>
+    <div class="page" id="my-submitted-complaints">
+        <h2>My Submitted Complaints</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Complaint ID</th>
+                        <th>Type of Issue</th>
+                        <th>Location</th>
+                        <th>Current Status</th>
+                        <th>Date Submitted</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>C001</td>
+                        <td>Pothole</td>
+                        <td>Main St, Bhiwandi</td>
+                        <td class="status-in-progress">In Progress</td>
+                        <td>2025-07-20</td>
+                        <td><a href="#">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td>C002</td>
+                        <td>Street Light Out</td>
+                        <td>Elm St, Bhiwandi</td>
+                        <td class="status-resolved">Resolved</td>
+                        <td>2025-07-18</td>
+                        <td><a href="#">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td>C003</td>
+                        <td>Garbage Collection</td>
+                        <td>Park Ave, Bhiwandi</td>
+                        <td class="status-pending">Pending</td>
+                        <td>2025-07-22</td>
+                        <td><a href="#">View Details</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p style="margin-top: 15px; font-style: italic;">*Click "View Details" to see vendor updates and admin notes.</p>
+    </div>
+</body>
+</html>
