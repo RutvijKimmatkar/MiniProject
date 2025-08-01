@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Complaint</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        .header {
+            background-color: #4bc8eb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cce0ff;
+        }
+        .header .nav-links a {
+            color: #0056b3; text-decoration: none; margin-right: 20px; font-weight: bold;
+        }
+        .header .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .header .logo {
+            font-size: 1.2em; font-weight: bold; color: #0056b3;
+        }
+        .page {
+            background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid #ddd; margin-top: 30px;
+        }
+        h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group textarea {
+            width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px;
+        }
+        .btn {
+            background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;
+        }
+        .btn:hover { background-color: #0056b3; }
+        .status-in-progress { color: orange; font-weight: bold; }
+        .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
+        .photo-thumbnail { width: 100px; height: 100px; background-color: #eee; border: 1px solid #ccc; display: flex; justify-content: center; align-items: center; font-size: 0.8em; color: #555; overflow: hidden; }
+        .map-container {
+            height: 150px; width: 100%; border: 1px dashed #999; margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="my-submitted-complaints.html">Complaints</a>
+            <a href="#">Help</a>
+            <a href="#">About us</a>
+            <a href="login-selection.html">login</a>
+        </div>
+        <div class="logo">DBIT 2025</div>
+    </div>
+    <div class="page" id="update-complaint">
+        <h2>Update Complaint: <span style="color: #007bff;">V001</span></h2>
+        <div style="margin-bottom: 20px;">
+            <p><strong>Issue Type:</strong> Pothole</p>
+            <p><strong>Location:</strong> Main St, Bhiwandi (Lat: 19.1234, Lon: 73.8901)</p>
+            <p><strong>Description:</strong> Large pothole near main square.</p>
+            <p><strong>Current Status:</strong> <span class="status-in-progress">In Progress</span></p>
+            <div id="update-map" class="map-container" style="height: 150px; font-size: 0.9em;"></div>
+            <p><strong>Photos (User/Admin Uploaded):</strong></p>
+            <div class="photos-grid">
+                <div class="photo-thumbnail">User Photo 1</div>
+            </div>
+        </div>
+        <h3>Status Update:</h3>
+        <div class="form-group">
+            <input type="radio" id="in-progress-radio" name="status" value="In Progress">
+            <label for="in-progress-radio">In Progress</label>
+            <input type="radio" id="resolved-radio" name="status" value="Resolved">
+            <label for="resolved-radio">Resolved</label>
+        </div>
+        <div class="form-group">
+            <label for="vendor-comments">Comments/Notes:</label>
+            <textarea id="vendor-comments" rows="3" placeholder="Add comments about the situation..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Upload Photo Proof (Before/After):</label>
+            <button class="btn">Upload Photo</button>
+            <div class="photos-grid">
+                <div class="photo-thumbnail">Vendor Photo 1</div>
+            </div>
+        </div>
+        <button class="btn">Save Updates</button>
+        <button class="btn" onclick="window.location.href='assigned-complaints.html'">Back to List</button>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const updateMap = L.map('update-map').setView([19.1234, 73.8901], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(updateMap);
+        L.marker([19.1234, 73.8901]).addTo(updateMap)
+            .bindPopup("Complaint V001 Location").openPopup();
+    </script>
+</body>
+</html>
