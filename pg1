@@ -6,57 +6,234 @@
     <title>Civic Complaint Portal</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        :root {
+            --header-bg: #82b8ea;
+            --header-fg: #1c314a;
+            --nav-link: #3260b1;
+            --nav-hover: #d7eaff;
+            --button-bg: #4285f4;
+            --button-fg: #fff;
+            --btn-hover: #2156a8;
+            --logo-fg: #2552a3;
+            --home-bg: linear-gradient(117deg,#e3f2fd 65%,#b1dfff 100%);
+            --card-bg: #fff;
+            --card-fg: #3e3f4a;
+            --shadow: 0 3px 14px #9acbf033;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: var(--home-bg);
+            color: var(--card-fg);
+            min-height: 100vh;
+            transition: background .3s, color .3s;
+        }
+
+        body.darkmode {
+            --header-bg: #222c39;
+            --header-fg: #bbd4ff;
+            --nav-link: #90bfff;
+            --nav-hover: #303948;
+            --button-bg: #365a8c;
+            --button-fg: #f7fbff;
+            --btn-hover: #218cff;
+            --logo-fg: #57b4fc;
+            --home-bg: linear-gradient(112deg,#191a1f 55%,#173668 100%);
+            --card-bg: #232946e6;
+            --card-fg: #e8f3fc;
+            --shadow: 0 6px 32px #08152370;
+        }
         .header {
-            background-color: #4bc8eb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cce0ff;
+            background: var(--header-bg);
+            color: var(--header-fg);
+            padding: 12px 22px 12px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid #bacff9;
+            box-shadow: var(--shadow);
         }
-        .header .nav-links a {
-            color: #0056b3; text-decoration: none; margin-right: 20px; font-weight: bold;
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
-        .header .nav-links a:hover {
-            text-decoration: underline;
+        .nav-links a {
+            color: var(--nav-link);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.09em;
+            padding: 7.5px 13px;
+            border-radius: 7px;
+            transition: background 0.18s, color 0.18s;
         }
-        .header .logo {
-            font-size: 1.2em; font-weight: bold; color: #0056b3;
+        .nav-links a:hover {
+            background: var(--nav-hover);
+            color: var(--btn-hover);
         }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .theme-toggle {
+            background: #fff;
+            color: #4b76cb;
+            font-size: 1.35em;
+            border: none;
+            outline: none;
+            padding: 6px 8px 6px 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            cursor: pointer;
+            box-shadow: 0 1.5px 8px #b9ddff31;
+            transition: background .18s, color .19s;
+        }
+        .theme-toggle:hover {
+            background: #e1efff;
+            color: #3b6bd8;
+        }
+        body.darkmode .theme-toggle {
+            background: #26344c;
+            color: #fed94c;
+        }
+        .logo {
+            font-size: 1.19em;
+            font-weight: bold;
+            color: var(--logo-fg);
+            letter-spacing: .5px;
+            background: #eaf5ff80;
+            border-radius: 10px;
+            padding: 6px 21px 7px 16px;
+            box-shadow: 0 1px 8px #2c63af0e;
+        }
+
         .home-page {
-            display: flex; min-height: calc(100vh - 50px); background-color: #71cdf7; padding: 20px; box-sizing: border-box; align-items: stretch;
+            display: flex;
+            min-height: calc(100vh - 60px);
+            background: transparent;
+            padding: 0 0 0 0;
+            box-sizing: border-box;
+            align-items: stretch;
         }
         .home-left {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center;
+            flex: 1.02;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 32px 20px 10px 40px;
+            text-align: center;
         }
         .home-right {
-            flex: 1.5; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            flex: 1.4;
+            padding: 20px 30px 20px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-width: 300px;
         }
         .portal-title {
-            font-family: 'Georgia', serif; font-size: 3em; color: #4a4a4a; margin-bottom: 40px;
+            font-family: 'Georgia', serif;
+            font-size: 2.6em;
+            line-height: 1.13;
+            color: #38508e;
+            margin-bottom: 42px;
+            text-shadow: 0 2px 18px #76bcfd26;
+            letter-spacing: -0.02em;
+        }
+        body.darkmode .portal-title {
+            color: #f6faff;
+            text-shadow: 0 2px 20px #2e97ff24;
         }
         .home-button {
-            background-color: #ffffff; color: #0056b3; border: 2px solid #007bff; padding: 15px 30px; margin-bottom: 20px; font-size: 1.2em; cursor: pointer; border-radius: 8px; width: 80%; max-width: 300px; text-align: center; text-decoration: none; display: block; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: var(--button-bg);
+            color: var(--button-fg);
+            border: 2px solid #00428618;
+            padding: 15px 30px;
+            margin-bottom: 22px;
+            font-size: 1.19em;
+            cursor: pointer;
+            border-radius: 10px;
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 2px 14px #6dc6c817;
+            font-weight: 600;
+            transition: background .18s, color .16s, box-shadow .19s;
+            display: block;
         }
         .home-button:hover {
-            background-color: #007bff; color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .home-link {
-            font-size: 1em; color: #0056b3; text-decoration: none; margin-top: 10px;
-        }
-        .home-link:hover {
-            text-decoration: underline;
+            background: var(--btn-hover);
+            color: #fff;
+            box-shadow: 0 5px 24px #69a9f74a;
         }
         .map-section {
-            background-color: #fff; border: 1px solid #ccc; width: 100%; height: 100%; position: relative; overflow: hidden;
+            background-color: var(--card-bg);
+            border: 1.3px solid #c5dee7;
+            width: 100%;
+            height: 100%;
+            min-height: 410px;
+            border-radius: 16px;
+            position: relative;
+            box-shadow: var(--shadow);
+            overflow: hidden;
         }
         #home-map {
-            width: 100%; height: 100%; min-height: 400px;
+            width: 100%;
+            height: 100%;
+            min-height: 410px;
+            border-radius: 0 0 12px 12px;
         }
         .map-overlay-bottom-right {
-            position: absolute; bottom: 10px; right: 10px; background-color: rgba(255, 255, 255, 0.8); padding: 5px 10px; font-size: 0.8em; border-radius: 5px; color: #555; z-index: 10;
+            position: absolute;
+            bottom: 13px;
+            right: 15px;
+            background: rgba(255,255,255,0.84);
+            padding: 6px 11px;
+            font-size: 1em;
+            border-radius: 8px;
+            color: #477;
+            font-weight: 500;
+            z-index: 10;
+            box-shadow: 0 2px 8px #b5eaff44;
         }
+        /* Proper button for click to view */
         .map-overlay-button {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; z-index: 10;
+            position: absolute;
+            bottom: 37px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--button-bg);
+            color: white;
+            padding: 15px 38px;
+            border: none;
+            border-radius: 9px;
+            font-size: 1.13em;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 15px #b4dbf884;
+            text-align: center;
+            opacity: .99;
+            transition: background .15s, filter .12s;
         }
-        .map-overlay-button:hover {
-            background-color: #0056b3;
+        .map-overlay-button:hover, .map-overlay-button:focus {
+            background-color: var(--btn-hover);
+            outline: 2px solid #2156a8;
+            filter: brightness(1.07);
+        }
+        @media (max-width: 900px){
+            .home-page {flex-direction: column;}
+            .home-left, .home-right {padding: 24px 9vw;}
+            .map-section {margin-top: 30px;}
+        }
+        @media (max-width: 650px){
+            .portal-title {font-size: 1.45em;}
+            .logo {padding: 7px 13px;}
+            .map-section {min-height: 250px;}
         }
     </style>
 </head>
@@ -64,35 +241,93 @@
     <div class="header">
         <div class="nav-links">
             <a href="index.html">HOME</a>
-            <a href="my-submitted-complaints.html">Complaints</a>
-            <a href="#">Help</a>
-            <a href="#">About us</a>
-            <a href="login-selection.html">login</a>
+            <a href="user-complaints.html">Complaints</a>
+            <a href="#help">Help</a>
+            <a href="#about-us">About us</a>
+            <a href="login-selection.html">Login</a>
         </div>
-        <div class="logo">DBIT 2025</div>
+        <div class="header-inner">
+            <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light mode">&#9790;</button>
+            <div class="logo">DBIT 2025</div>
+        </div>
     </div>
     <div class="home-page" id="home">
         <div class="home-left">
             <h1 class="portal-title">Civic Complaint<br>Portal</h1>
-            <a href="file:///C:/Users/hp/Documents/mini%20project/pg4.html" class="home-button">Login</a>
-            <a href="my-submitted-complaints.html" class="home-button">Dashboard</a>
+            <a href="3.html" class="home-button">Login</a>
+            <a href="user-complaints.html" class="home-button">Dashboard</a>
         </div>
         <div class="home-right">
             <div class="map-section">
                 <div id="home-map"></div>
                 <div class="map-overlay-bottom-right">Report a problem | OpenStreetMap contributors</div>
-                <button class="map-overlay-button">CLICK TO VIEW</button>
+                <button class="map-overlay-button" id="viewBtn" aria-label="View Complaint Submission Page">CLICK TO VIEW</button>
             </div>
         </div>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
+        // Setup map
         const THANE_COORDS = [19.2183, 72.9781];
         const DEFAULT_ZOOM = 13;
         const homeMap = L.map('home-map').setView(THANE_COORDS, DEFAULT_ZOOM);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(homeMap);
+
+        // SVG for pin marker (red, green, orange)
+        function pinIcon(color) {
+            return L.icon({
+                iconUrl: 'data:image/svg+xml;utf8,' + encodeURIComponent(`
+                <svg width="32" height="46" viewBox="0 0 32 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="16" cy="15" rx="12" ry="12" fill="${color}" stroke="black" stroke-width="1.5"/>
+                  <path d="M16 44C19.347 44 28 27.21 28 20C28 12.268 22.732 6 16 6C9.268 6 4 12.268 4 20C4 27.21 12.653 44 16 44Z"
+                     fill="${color}" stroke="black" stroke-width="1.5"/>
+                  <circle cx="16" cy="20" r="5.5" fill="#fff" stroke="black" stroke-width="1"/>
+                </svg>`),
+                iconSize: [34,45],
+                iconAnchor: [17,44],
+                popupAnchor: [1,-34],
+                tooltipAnchor: [16,0]
+            });
+        }
+        // Add demo pin markers for complaint statuses
+        [
+            {lat:19.219, lon:72.98, status:'Pending', color:'#e14646'},
+            {lat:19.217, lon:72.983, status:'Resolved', color:'#3ac272'},
+            {lat:19.215, lon:72.979, status:'In Progress', color:'#ed980c'}
+        ].forEach(c => {
+            L.marker([c.lat, c.lon], {
+                icon: pinIcon(c.color)
+            }).addTo(homeMap).bindTooltip(c.status, {direction:'top'});
+        });
+
+        // Fix "CLICK TO VIEW" to correctly go to form (and accessible)
+        document.getElementById('viewBtn').onclick = function() {
+            window.location.href = "submit-new-complaint.html";
+        };
+    </script>
+    <script>
+        // Light/Dark mode toggle logic
+        const toggle = document.getElementById('themeToggle');
+        function setMode(isDark) {
+            if(isDark) {
+                document.body.classList.add('darkmode');
+                toggle.innerHTML = '&#9728;';
+            } else {
+                document.body.classList.remove('darkmode');
+                toggle.innerHTML = '&#9790;';
+            }
+        }
+        let darkPreferred = (localStorage.getItem('darkmode') === "true") ||
+            (localStorage.getItem('darkmode') === null && window.matchMedia &&
+             window.matchMedia('(prefers-color-scheme: dark)').matches);
+        setMode(darkPreferred);
+        toggle.onclick = () => {
+            let dark = !document.body.classList.contains('darkmode');
+            setMode(dark);
+            localStorage.setItem('darkmode', dark);
+        };
     </script>
 </body>
 </html>
