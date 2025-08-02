@@ -1,44 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Submit New Complaint</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+        :root {
+            --header-bg: #82b8ea;
+            --header-fg: #1c314a;
+            --nav-link: #3260b1;
+            --nav-hover: #d7eaff;
+            --button-bg: #4285f4;
+            --button-fg: #fff;
+            --btn-hover: #2156a8;
+            --logo-fg: #2552a3;
+            --page-bg: #fff;
+            --page-fg: #26334c;
+            --shadow: 0 3px 20px #aecaf540;
+            --input-border: #d0dee9;
+            --input-bg: #f8fafc;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #e3f2fd;
+            color: var(--page-fg);
+        }
         .header {
-            background-color: #4bc8eb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cce0ff;
+            background: var(--header-bg);
+            color: var(--header-fg);
+            padding: 12px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid #bacff9;
+            box-shadow: var(--shadow);
         }
-        .header .nav-links a {
-            color: #0056b3; text-decoration: none; margin-right: 20px; font-weight: bold;
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
-        .header .nav-links a:hover {
-            text-decoration: underline;
+        .nav-links a {
+            color: var(--nav-link);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1em;
+            padding: 7px 14px;
+            border-radius: 6px;
+            transition: background 0.18s, color 0.18s;
         }
-        .header .logo {
-            font-size: 1.2em; font-weight: bold; color: #0056b3;
+        .nav-links a:hover {
+            background: var(--nav-hover);
+            color: var(--btn-hover);
+        }
+        .logo {
+            font-size: 1.18em;
+            font-weight: bold;
+            background: #eaf5ff80;
+            color: var(--logo-fg);
+            padding: 6px 18px 7px 16px;
+            border-radius: 10px;
+            box-shadow: 0 1px 8px #2c63af0e;
         }
         .page {
-            background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid #ddd; margin-top: 30px;
+            max-width: 520px;
+            margin: 38px auto 52px auto;
+            background: var(--page-bg);
+            padding: 34px 40px 36px 40px;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            border: 1.2px solid #c8daf2;
         }
-        h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input[type="text"],
-        .form-group textarea,
-        .form-group select {
-            width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px;
+        h2 {
+            color: #38508e;
+            font-weight: 700;
+            font-size: 2em;
+            margin-bottom: 32px;
+            border-bottom: 3px solid #6e94d7;
+            padding-bottom: 10px;
+            letter-spacing: -0.03em;
         }
+        .form-group {
+            margin-bottom: 23px;
+        }
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 9px;
+            font-size: 1em;
+            color: #244a86;
+        }
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 13px;
+            border-radius: 8px;
+            border: 1.7px solid var(--input-border);
+            font-size: 1.05em;
+            background: var(--input-bg);
+            transition: border-color 0.2s;
+            outline-offset: 2px;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--button-bg);
+            background: #fff;
+        }
+        textarea { resize: vertical; min-height: 65px; }
         .btn {
-            background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;
+            background: var(--button-bg);
+            color: var(--button-fg);
+            font-weight: 700;
+            font-size: 1.09em;
+            padding: 12px 0;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            width: 49%;
+            box-shadow: 0 2px 13px #99c9e784;
+            transition: background 0.18s, color 0.14s, box-shadow 0.2s;
+            margin-top: 7px;
         }
-        .btn:hover { background-color: #0056b3; }
+        .btn:hover,
+        .btn:focus {
+            background: var(--btn-hover);
+            color: #fff;
+            box-shadow: 0 8px 28px #6baef333;
+        }
+        /* Map container design */
         .map-container {
-            height: 300px; width: 100%; border: 1px dashed #999; margin-bottom: 20px;
+            height: 310px;
+            width: 100%;
+            border: 1.6px solid #bfd7e3;
+            border-radius: 13px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 12px #d8e9f830;
+            background: #f7fbfe;
         }
-        .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
-        .photo-thumbnail { width: 100px; height: 100px; background-color: #eee; border: 1px solid #ccc; display: flex; justify-content: center; align-items: center; font-size: 0.8em; color: #555; overflow: hidden; }
+        .map-coords {
+            font-size: 0.97em;
+            color: #446;
+            margin-top: 5px;
+        }
+        .photos-grid {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .photo-thumbnail {
+            width: 100px; height: 100px;
+            background: #e6eef9;
+            border: 1px solid #b9cbe1;
+            border-radius: 7px;
+            display: flex; justify-content:center; align-items:center;
+            font-size: 0.93em; color: #668; overflow: hidden;
+            box-shadow: 0 1px 8px #abbfd110;
+        }
+        @media (max-width: 610px) {
+            .page {padding: 20px 6vw;}
+            h2 {font-size: 1.25em;}
+        }
     </style>
 </head>
 <body>
@@ -48,64 +174,73 @@
             <a href="my-submitted-complaints.html">Complaints</a>
             <a href="#">Help</a>
             <a href="#">About us</a>
-            <a href="login-selection.html">login</a>
+            <a href="login-selection.html">Login</a>
         </div>
         <div class="logo">DBIT 2025</div>
     </div>
     <div class="page" id="submit-new-complaint">
         <h2>Submit New Complaint</h2>
-        <div class="form-group">
-            <label for="issue-type">Type of Issue:</label>
-            <select id="issue-type">
-                <option value="">-- Select --</option>
-                <option value="Pothole">Pothole</option>
-                <option value="Street Light Out">Street Light Out</option>
-                <option value="Garbage Collection">Garbage Collection</option>
-                <option value="Water Leak">Water Leak</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="description">Description of Issue:</label>
-            <textarea id="description" rows="5" placeholder="Provide details about the issue..."></textarea>
-        </div>
-        <div class="form-group">
-            <label for="location-address">Location (Address / Landmark):</label>
-            <input type="text" id="location-address" placeholder="e.g., Near City Hospital, Road No. 5"><br>
-        </div>
-        <div class="form-group">
-            <label>Exact Location on Map:</label>
-            <div id="submit-map" class="map-container"></div>
-            <p style="font-size: 0.9em; color: #666;">*Pin drop will auto-fill Latitude: <span id="lat-display">[Lat]</span>, Longitude: <span id="lon-display">[Lon]</span></p>
-            <button class="btn" style="margin-top: 5px;" onclick="useCurrentLocation()">Use My Current Location (Optional)</button>
-        </div>
-        <div class="form-group">
-            <label>Upload Photos (Optional):</label>
-            <button class="btn">Choose Files</button>
-            <div class="photos-grid">
-                <div class="photo-thumbnail">Image 1</div>
-                <div class="photo-thumbnail">Image 2</div>
+        <form>
+            <div class="form-group">
+                <label for="issue-type">Type of Issue:</label>
+                <select id="issue-type" name="issue-type" required>
+                    <option value="">-- Select --</option>
+                    <option value="Pothole">Pothole</option>
+                    <option value="Street Light Out">Street Light Out</option>
+                    <option value="Garbage Collection">Garbage Collection</option>
+                    <option value="Water Leak">Water Leak</option>
+                    <option value="Other">Other</option>
+                </select>
             </div>
-        </div>
-        <button class="btn">Submit Complaint</button>
+            <div class="form-group">
+                <label for="description">Description of Issue:</label>
+                <textarea id="description" name="description" rows="5" placeholder="Provide details about the issue..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="location-address">Location (Address / Landmark):</label>
+                <input type="text" id="location-address" name="location-address" placeholder="e.g., Near City Hospital, Road No. 5" required />
+            </div>
+            <div class="form-group">
+                <label>Exact Location on Map:</label>
+                <div id="submit-map" class="map-container"></div>
+                <div class="map-coords">
+                    *Pin drop will auto-fill Latitude: <span id="lat-display" style="color:#1460bb;">[Lat]</span>,
+                    Longitude: <span id="lon-display" style="color:#1460bb;">[Lon]</span>
+                </div>
+                <button type="button" class="btn" style="width:100%;margin-top:12px;" onclick="useCurrentLocation()">Use My Current Location</button>
+            </div>
+            <div class="form-group">
+                <label>Upload Photos (Optional):</label>
+                <input type="file" multiple style="display:block;margin-bottom:8px;" />
+                <div class="photos-grid">
+                    <div class="photo-thumbnail">Image 1</div>
+                    <div class="photo-thumbnail">Image 2</div>
+                </div>
+            </div>
+            <button type="submit" class="btn" style="width:100%;margin-top:17px;margin-bottom:0;">Submit Complaint</button>
+        </form>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
+        // Map setup with pin drop
         const THANE_COORDS = [19.2183, 72.9781];
         const DEFAULT_ZOOM = 13;
         const submitMap = L.map('submit-map').setView(THANE_COORDS, DEFAULT_ZOOM);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(submitMap);
+
         let complaintMarker;
         submitMap.on('click', function(e) {
             if (complaintMarker) {
                 submitMap.removeLayer(complaintMarker);
             }
+            // Add a pin marker (not circle)
             complaintMarker = L.marker(e.latlng).addTo(submitMap);
             document.getElementById('lat-display').textContent = e.latlng.lat.toFixed(4);
             document.getElementById('lon-display').textContent = e.latlng.lng.toFixed(4);
         });
+
         function useCurrentLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
