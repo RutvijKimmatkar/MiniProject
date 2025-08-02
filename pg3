@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -200,7 +201,7 @@
             <button type="submit" class="home-button">Login</button>
         </form>
         <p class="register-link">
-            Don't have an account? <a href="2.html">Register here</a>
+            Don't have an account? <a href="file:///C:/Users/hp/Documents/mini%20project/pg2.html">Register here</a>
         </p>
     </div>
 </body>
