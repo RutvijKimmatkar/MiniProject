@@ -244,7 +244,7 @@
             <a href="user-complaints.html">Complaints</a>
             <a href="#help">Help</a>
             <a href="#about-us">About us</a>
-            <a href="login-selection.html">Login</a>
+            <a href="file:///C:/Users/hp/Documents/mini%20project/pg3.html">Login</a>
         </div>
         <div class="header-inner">
             <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light mode">&#9790;</button>
@@ -254,7 +254,7 @@
     <div class="home-page" id="home">
         <div class="home-left">
             <h1 class="portal-title">Civic Complaint<br>Portal</h1>
-            <a href="3.html" class="home-button">Login</a>
+            <a href="file:///C:/Users/hp/Documents/mini%20project/pg3.html" class="home-button">Login</a>
             <a href="user-complaints.html" class="home-button">Dashboard</a>
         </div>
         <div class="home-right">
